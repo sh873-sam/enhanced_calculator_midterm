@@ -8,6 +8,7 @@ from app.calculation import Calculation
 from app.history import History
 from app.input_validators import validate_number, validate_operation
 from app.calculator_memento import HistoryCaretaker
+from app.logger import LoggingObserver, AutoSaveObserver
 
 init(autoreset=True)
 
@@ -29,6 +30,14 @@ class Calculator:
     def __init__(self):
         self.history = History()
         self.caretaker = HistoryCaretaker()
+        self.observers = [
+            LoggingObserver(),
+            AutoSaveObserver(self.history),
+        ]
+
+    def notify_observers(self, calculation):
+        for observer in self.observers:
+            observer.update(calculation)
 
     def run(self):
         print(Fore.GREEN + "Enhanced Calculator")
@@ -111,6 +120,7 @@ class Calculator:
                 calculation = Calculation(operation, a, b)
                 result = calculation.perform()
                 self.history.add(calculation)
+                self.notify_observers(calculation)
 
                 print(Fore.GREEN + f"Result: {result}")
 
