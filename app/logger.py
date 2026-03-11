@@ -16,6 +16,7 @@ class LoggingObserver:
             filename=log_file,
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(message)s",
+            force=True,
         )
 
     def update(self, calculation):
