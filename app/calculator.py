@@ -26,14 +26,13 @@ VALID_OPERATIONS = {
 
 
 class Calculator:
-
     def __init__(self):
         self.history = History()
         self.caretaker = HistoryCaretaker()
 
     def run(self):
         print(Fore.GREEN + "Enhanced Calculator")
-        print("Commands: history, clear, undo, redo, help, exit")
+        print("Commands: history, clear, undo, redo, save, load, help, exit")
         print("For math: operation number number\n")
 
         while True:
@@ -46,7 +45,7 @@ class Calculator:
             if user_input.lower() == "help":
                 print(Fore.YELLOW + "Available operations:")
                 print(", ".join(sorted(VALID_OPERATIONS)))
-                print("Other commands: history, clear, undo, redo, help, exit")
+                print("Other commands: history, clear, undo, redo, save, load, help, exit")
                 continue
 
             if user_input.lower() == "history":
@@ -82,6 +81,19 @@ class Calculator:
                 else:
                     self.history.set_history(next_state)
                     print(Fore.YELLOW + "Redo successful.")
+                continue
+
+            if user_input.lower() == "save":
+                self.history.save_to_csv()
+                print(Fore.YELLOW + "History saved to CSV.")
+                continue
+
+            if user_input.lower() == "load":
+                try:
+                    self.history.load_from_csv()
+                    print(Fore.YELLOW + "History loaded from CSV.")
+                except FileNotFoundError:
+                    print(Fore.RED + "No history file found.")
                 continue
 
             try:
