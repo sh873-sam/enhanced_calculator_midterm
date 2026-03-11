@@ -2,14 +2,13 @@
 Interactive calculator CLI.
 """
 
-from colorama import Fore, Style, init
+from colorama import Fore, init
 
 from app.calculation import Calculation
 from app.history import History
 from app.input_validators import validate_number, validate_operation
 
 init(autoreset=True)
-
 
 VALID_OPERATIONS = {
     "add",
@@ -63,3 +62,8 @@ class Calculator:
 
             except Exception as e:
                 print(Fore.RED + f"Error: {e}")
+
+
+if __name__ == "__main__":
+    calculator = Calculator()
+    calculator.run()
