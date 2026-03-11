@@ -3,10 +3,15 @@ Observer classes for calculator logging and auto-save.
 """
 
 import logging
+from app.calculator_config import Config
 
 
 class LoggingObserver:
-    def __init__(self, log_file="calculator.log"):
+    """
+    Logs every calculation to a log file.
+    """
+
+    def __init__(self, log_file=Config.LOG_FILE):
         logging.basicConfig(
             filename=log_file,
             level=logging.INFO,
@@ -24,7 +29,11 @@ class LoggingObserver:
 
 
 class AutoSaveObserver:
-    def __init__(self, history, filename="history.csv"):
+    """
+    Automatically saves calculator history to CSV after each calculation.
+    """
+
+    def __init__(self, history, filename=Config.HISTORY_FILE):
         self.history = history
         self.filename = filename
 

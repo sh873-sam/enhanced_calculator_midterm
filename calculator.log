@@ -1,2 +1,4 @@
 2026-03-10 21:34:32,734 - INFO - Operation=add, a=10.0, b=5.0, result=15.0
 2026-03-10 21:34:38,463 - INFO - Operation=multiply, a=2.0, b=8.0, result=16.0
+2026-03-10 21:37:38,996 - INFO - Operation=add, a=3.0, b=7.0, result=10.0
+2026-03-10 21:37:42,835 - INFO - Operation=multiply, a=4.0, b=6.0, result=24.0
