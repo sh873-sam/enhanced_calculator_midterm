@@ -5,10 +5,12 @@ Interactive calculator CLI.
 from colorama import Fore, init
 
 from app.calculation import Calculation
+from app.calculator_config import Config
+from app.calculator_memento import HistoryCaretaker
+from app.exceptions import CalculatorError, PersistenceError, ValidationError
 from app.history import History
 from app.input_validators import validate_number, validate_operation
-from app.calculator_memento import HistoryCaretaker
-from app.logger import LoggingObserver, AutoSaveObserver
+from app.logger import AutoSaveObserver, LoggingObserver
 
 init(autoreset=True)
 
@@ -28,6 +30,7 @@ VALID_OPERATIONS = {
 
 class Calculator:
     def __init__(self):
+        Config.validate()
         self.history = History()
         self.caretaker = HistoryCaretaker()
         self.observers = [
@@ -93,23 +96,26 @@ class Calculator:
                 continue
 
             if user_input.lower() == "save":
-                self.history.save_to_csv()
-                print(Fore.YELLOW + "History saved to CSV.")
+                try:
+                    self.history.save_to_csv()
+                    print(Fore.YELLOW + "History saved to CSV.")
+                except PersistenceError as exc:
+                    print(Fore.RED + f"Error: {exc}")
                 continue
 
             if user_input.lower() == "load":
                 try:
                     self.history.load_from_csv()
                     print(Fore.YELLOW + "History loaded from CSV.")
-                except FileNotFoundError:
-                    print(Fore.RED + "No history file found.")
+                except PersistenceError as exc:
+                    print(Fore.RED + f"Error: {exc}")
                 continue
 
             try:
                 parts = user_input.split()
 
                 if len(parts) != 3:
-                    raise ValueError("Format: operation number number")
+                    raise ValidationError("Format: operation number number")
 
                 operation = validate_operation(parts[0], VALID_OPERATIONS)
                 a = validate_number(parts[1])
@@ -117,17 +123,19 @@ class Calculator:
 
                 self.caretaker.save(self.history.get_all())
 
-                calculation = Calculation(operation, a, b)
+                calculation = Calculation.create(operation, a, b)
                 result = calculation.perform()
                 self.history.add(calculation)
                 self.notify_observers(calculation)
 
                 print(Fore.GREEN + f"Result: {result}")
 
-            except Exception as e:
-                print(Fore.RED + f"Error: {e}")
+            except CalculatorError as exc:
+                print(Fore.RED + f"Error: {exc}")
+            except Exception as exc:
+                print(Fore.RED + f"Unexpected error: {exc}")
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     calculator = Calculator()
     calculator.run()

@@ -114,35 +114,47 @@ def test_save_and_load_commands(monkeypatch, capsys, tmp_path):
 
 
 def test_config_defaults(monkeypatch):
-    monkeypatch.delenv("LOG_FILE", raising=False)
-    monkeypatch.delenv("HISTORY_FILE", raising=False)
-    monkeypatch.delenv("AUTO_SAVE", raising=False)
-    monkeypatch.delenv("MAX_HISTORY", raising=False)
-    monkeypatch.delenv("PRECISION", raising=False)
+    monkeypatch.delenv("CALCULATOR_LOG_DIR", raising=False)
+    monkeypatch.delenv("CALCULATOR_HISTORY_DIR", raising=False)
+    monkeypatch.delenv("CALCULATOR_MAX_HISTORY_SIZE", raising=False)
+    monkeypatch.delenv("CALCULATOR_AUTO_SAVE", raising=False)
+    monkeypatch.delenv("CALCULATOR_PRECISION", raising=False)
+    monkeypatch.delenv("CALCULATOR_MAX_INPUT_VALUE", raising=False)
+    monkeypatch.delenv("CALCULATOR_DEFAULT_ENCODING", raising=False)
 
     importlib.reload(calculator_config)
 
-    assert calculator_config.Config.LOG_FILE == "calculator.log"
-    assert calculator_config.Config.HISTORY_FILE == "history.csv"
-    assert calculator_config.Config.AUTO_SAVE is True
-    assert calculator_config.Config.MAX_HISTORY == 100
-    assert calculator_config.Config.PRECISION == 4
+    assert calculator_config.Config.CALCULATOR_LOG_DIR == "logs"
+    assert calculator_config.Config.CALCULATOR_HISTORY_DIR == "data"
+    assert calculator_config.Config.CALCULATOR_MAX_HISTORY_SIZE == 100
+    assert calculator_config.Config.CALCULATOR_AUTO_SAVE is True
+    assert calculator_config.Config.CALCULATOR_PRECISION == 4
+    assert calculator_config.Config.CALCULATOR_MAX_INPUT_VALUE == 1000000
+    assert calculator_config.Config.CALCULATOR_DEFAULT_ENCODING == "utf-8"
+    assert calculator_config.Config.LOG_FILE == str(Path("logs") / "calculator.log")
+    assert calculator_config.Config.HISTORY_FILE == str(Path("data") / "history.csv")
 
 
 def test_config_env_values(monkeypatch):
-    monkeypatch.setenv("LOG_FILE", "custom.log")
-    monkeypatch.setenv("HISTORY_FILE", "custom.csv")
-    monkeypatch.setenv("AUTO_SAVE", "false")
-    monkeypatch.setenv("MAX_HISTORY", "50")
-    monkeypatch.setenv("PRECISION", "2")
+    monkeypatch.setenv("CALCULATOR_LOG_DIR", "custom_logs")
+    monkeypatch.setenv("CALCULATOR_HISTORY_DIR", "custom_data")
+    monkeypatch.setenv("CALCULATOR_MAX_HISTORY_SIZE", "50")
+    monkeypatch.setenv("CALCULATOR_AUTO_SAVE", "false")
+    monkeypatch.setenv("CALCULATOR_PRECISION", "2")
+    monkeypatch.setenv("CALCULATOR_MAX_INPUT_VALUE", "500")
+    monkeypatch.setenv("CALCULATOR_DEFAULT_ENCODING", "utf-8")
 
     importlib.reload(calculator_config)
 
-    assert calculator_config.Config.LOG_FILE == "custom.log"
-    assert calculator_config.Config.HISTORY_FILE == "custom.csv"
-    assert calculator_config.Config.AUTO_SAVE is False
-    assert calculator_config.Config.MAX_HISTORY == 50
-    assert calculator_config.Config.PRECISION == 2
+    assert calculator_config.Config.CALCULATOR_LOG_DIR == "custom_logs"
+    assert calculator_config.Config.CALCULATOR_HISTORY_DIR == "custom_data"
+    assert calculator_config.Config.CALCULATOR_MAX_HISTORY_SIZE == 50
+    assert calculator_config.Config.CALCULATOR_AUTO_SAVE is False
+    assert calculator_config.Config.CALCULATOR_PRECISION == 2
+    assert calculator_config.Config.CALCULATOR_MAX_INPUT_VALUE == 500
+    assert calculator_config.Config.CALCULATOR_DEFAULT_ENCODING == "utf-8"
+    assert calculator_config.Config.LOG_FILE == str(Path("custom_logs") / "calculator.log")
+    assert calculator_config.Config.HISTORY_FILE == str(Path("custom_data") / "history.csv")
 
 
 def test_logging_observer_creates_log_file(tmp_path):

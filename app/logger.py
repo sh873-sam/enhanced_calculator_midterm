@@ -3,6 +3,7 @@ Observer classes for calculator logging and auto-save.
 """
 
 import logging
+
 from app.calculator_config import Config
 
 
@@ -17,6 +18,7 @@ class LoggingObserver:
             level=logging.INFO,
             format="%(asctime)s - %(levelname)s - %(message)s",
             force=True,
+            encoding=Config.CALCULATOR_DEFAULT_ENCODING,
         )
 
     def update(self, calculation):
@@ -39,4 +41,5 @@ class AutoSaveObserver:
         self.filename = filename
 
     def update(self, calculation):
-        self.history.save_to_csv(self.filename)
+        if Config.CALCULATOR_AUTO_SAVE:
+            self.history.save_to_csv(self.filename)

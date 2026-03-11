@@ -1,0 +1,10 @@
+2026-03-10 22:31:10,706 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:31:10,716 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:34:09,727 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:34:09,738 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:36:37,372 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:36:37,381 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:38:34,303 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:38:34,315 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:42:37,080 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
+2026-03-10 22:42:37,090 - INFO - Operation=add, a=2.0, b=3.0, result=5.0
