@@ -7,6 +7,7 @@ from colorama import Fore, init
 from app.calculation import Calculation
 from app.history import History
 from app.input_validators import validate_number, validate_operation
+from app.calculator_memento import HistoryCaretaker
 
 init(autoreset=True)
 
@@ -28,21 +29,62 @@ class Calculator:
 
     def __init__(self):
         self.history = History()
+        self.caretaker = HistoryCaretaker()
 
     def run(self):
         print(Fore.GREEN + "Enhanced Calculator")
-        print("Type 'exit' to quit.\n")
+        print("Commands: history, clear, undo, redo, help, exit")
+        print("For math: operation number number\n")
 
         while True:
-
-            user_input = input(Fore.CYAN + "Enter operation and two numbers: ")
+            user_input = input(Fore.CYAN + "Enter operation and two numbers: ").strip()
 
             if user_input.lower() == "exit":
                 print(Fore.YELLOW + "Goodbye!")
                 break
 
-            try:
+            if user_input.lower() == "help":
+                print(Fore.YELLOW + "Available operations:")
+                print(", ".join(sorted(VALID_OPERATIONS)))
+                print("Other commands: history, clear, undo, redo, help, exit")
+                continue
 
+            if user_input.lower() == "history":
+                if not self.history.get_all():
+                    print(Fore.YELLOW + "History is empty.")
+                else:
+                    for i, calc in enumerate(self.history.get_all(), start=1):
+                        print(
+                            Fore.YELLOW
+                            + f"{i}. {calc.operation} {calc.a} {calc.b} = {calc.perform()}"
+                        )
+                continue
+
+            if user_input.lower() == "clear":
+                self.caretaker.save(self.history.get_all())
+                self.history.clear()
+                print(Fore.YELLOW + "History cleared.")
+                continue
+
+            if user_input.lower() == "undo":
+                previous_state = self.caretaker.undo(self.history.get_all())
+                if previous_state is None:
+                    print(Fore.RED + "Nothing to undo.")
+                else:
+                    self.history.set_history(previous_state)
+                    print(Fore.YELLOW + "Undo successful.")
+                continue
+
+            if user_input.lower() == "redo":
+                next_state = self.caretaker.redo(self.history.get_all())
+                if next_state is None:
+                    print(Fore.RED + "Nothing to redo.")
+                else:
+                    self.history.set_history(next_state)
+                    print(Fore.YELLOW + "Redo successful.")
+                continue
+
+            try:
                 parts = user_input.split()
 
                 if len(parts) != 3:
@@ -52,10 +94,10 @@ class Calculator:
                 a = validate_number(parts[1])
                 b = validate_number(parts[2])
 
+                self.caretaker.save(self.history.get_all())
+
                 calculation = Calculation(operation, a, b)
-
                 result = calculation.perform()
-
                 self.history.add(calculation)
 
                 print(Fore.GREEN + f"Result: {result}")

@@ -2,6 +2,7 @@
 Manages calculation history.
 """
 
+
 class History:
     def __init__(self):
         self.history = []
@@ -19,3 +20,6 @@ class History:
         if not self.history:
             return None
         return self.history[-1]
+
+    def set_history(self, new_history):
+        self.history = new_history
